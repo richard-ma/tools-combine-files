@@ -25,6 +25,7 @@ class App:
     def run(self):
         self.usage()
         self.process()
+        self.pressAnyKeyToContinue()
 
     def usage(self):
         print("*" * 80)
@@ -80,15 +81,26 @@ class App:
         self.workingDir = wd
         return self.workingDir
 
-    def getFilesFromDir(self, path, only_file=True):
+    def getFilesFromDir(self, path, only_file=True, filter_with_ext=''):
         for file in os.listdir(path):
-            if only_file and os.path.isfile(os.path.join(path, file)):
-                yield file
+            if only_file:
+                if os.path.isfile(os.path.join(path, file)):
+                    if len(filter_with_ext) == 0:
+                        yield file
+                    elif len(filter_with_ext) > 0 and file.endswith(filter_with_ext):
+                        yield file
+                    else:
+                        continue
+                else:
+                    continue
             else:
                 yield file
 
     def setWorkingDirFromFilename(self, filename):
         return self.setWorkingDir(os.path.dirname(filename))
+
+    def pressAnyKeyToContinue(self):
+        os.system('pause')
 
     def process(self):
         pass
@@ -98,15 +110,13 @@ class MyApp(App):
     def __init__(self):
         super().__init__()
         self.settings = {
-            'input_dir': 'data',
+            'input_dir': '.',
             'output_file': 'output.csv',
         }
 
     def process(self):
         # set input
-        input_dir = self.input(
-            "请将待合并文件的目录拖动到此窗口，然后按回车键。",
-            default=self.settings['input_dir'])
+        input_dir = self.settings['input_dir']
         # pprint(input_dir)
 
         # set working directory
@@ -120,7 +130,7 @@ class MyApp(App):
         # get files
         output_data = list()
 
-        for file in self.getFilesFromDir(input_dir):
+        for file in self.getFilesFromDir(input_dir, filter_with_ext='csv'):
             filename = os.path.join(input_dir, file)
             print("Processing: %s" % (filename))
             # read data
