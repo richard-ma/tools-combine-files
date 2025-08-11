@@ -134,13 +134,15 @@ class MyApp(App):
             filename = os.path.join(input_dir, file)
             print("Processing: %s" % (filename))
             # read data
-            data = self.readCsvToDict(filename, encoding='UTF-8-sig')
+            # data = self.readCsvToDict(filename, encoding='UTF-8-sig')
+            data = self.readCsvToDict(filename)
             for line in data:
                 output_data.append(line)
 
         print("Writing to file: %s" % (output_filename))
         # write data
-        self.writeCsvFromDict(output_filename, output_data, encoding='UTF-8-sig')
+        # self.writeCsvFromDict(output_filename, output_data, encoding='UTF-8-sig')
+        self.writeCsvFromDict(output_filename, output_data)
 
 
 if __name__ == "__main__":
